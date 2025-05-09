@@ -52,14 +52,13 @@ services:
     image: kong:3.9.0
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
-    entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && chmod 644 ~/kong.yml &&
-      /docker-entrypoint.sh kong docker-start'
+    entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > /tmp/kong.yml && chmod 644 /tmp/kong.yml && /docker-entrypoint.sh kong docker-start'
     depends_on:
       analytics:
         condition: service_healthy
     environment:
       KONG_DATABASE: "off"
-      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DECLARATIVE_CONFIG: /tmp/kong.yml
       # https://github.com/supabase/cli/issues/14
       KONG_DNS_ORDER: LAST,A,CNAME
       KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth

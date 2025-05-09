@@ -52,7 +52,7 @@ services:
     image: kong:3.9.0
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
-    entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml &&
+    entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && chmod 644 ~/kong.yml &&
       /docker-entrypoint.sh kong docker-start'
     depends_on:
       analytics:

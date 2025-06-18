@@ -8,7 +8,7 @@ name: supabase
 
 services:
   studio:
-    image: supabase/studio:2025.05.05-sha-3c3fe9b
+    image: supabase/studio:2025.06.16-sha-c4316c3
     restart: unless-stopped
     healthcheck:
       test:
@@ -49,7 +49,7 @@ services:
       # NEXT_ANALYTICS_BACKEND_PROVIDER: bigquery
 
   kong:
-    image: kong:3.9.0
+    image: kong:3.9.1
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > /tmp/kong.yml && chmod 644 /tmp/kong.yml && /docker-entrypoint.sh kong docker-start'
@@ -166,7 +166,7 @@ services:
 
 
   rest:
-    image: postgrest/postgrest:v13.0.0
+    image: postgrest/postgrest:v13.0.4
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -187,7 +187,7 @@ services:
   realtime:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     container_name: realtime-dev.supabase-realtime
-    image: supabase/realtime:v2.34.47
+    image: supabase/realtime:v2.37.1
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -231,7 +231,7 @@ services:
 
   # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
   storage:
-    image: supabase/storage-api:v1.22.13
+    image: supabase/storage-api:v1.24.6
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -288,7 +288,7 @@ services:
       - ./volumes/storage:/var/lib/storage:z
 
   meta:
-    image: supabase/postgres-meta:v0.89.0
+    image: supabase/postgres-meta:v0.89.3
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -326,7 +326,7 @@ services:
       - /home/deno/functions/main
 
   analytics:
-    image: supabase/logflare:1.14.0
+    image: supabase/logflare:1.14.2
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:4000/health" ]
       timeout: 5s
@@ -366,7 +366,7 @@ services:
 
   # Comment out everything below this point if you are using an external Postgres database
   db:
-    image: supabase/postgres:17.4.1.028
+    image: supabase/postgres:17.4.1.043
     healthcheck:
       test: pg_isready -U postgres -h localhost
       interval: 5s
@@ -412,7 +412,7 @@ services:
       - db-config:/etc/postgresql-custom
 
   vector:
-    image: timberio/vector:nightly-2025-05-09-alpine
+    image: timberio/vector:nightly-2025-06-18-alpine
     healthcheck:
       test:
         [
@@ -436,7 +436,7 @@ services:
 
   # Update the DATABASE_URL if you are using an external Postgres database
   supavisor:
-    image: supabase/supavisor:2.5.1
+    image: supabase/supavisor:2.5.2
     healthcheck:
       test: curl -sSfL --head -o /dev/null "http://127.0.0.1:4000/api/health"
       interval: 10s

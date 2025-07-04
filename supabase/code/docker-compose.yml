@@ -22,9 +22,9 @@ services:
       timeout: 10s
       interval: 5s
       retries: 3
-#    depends_on:
-#      analytics:
-#        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       HOSTNAME: 0.0.0.0
       STUDIO_PG_META_URL: http://meta:8080
@@ -53,9 +53,9 @@ services:
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > /tmp/kong.yml && chmod 644 /tmp/kong.yml && /docker-entrypoint.sh kong docker-start'
-#    depends_on:
-#      analytics:
-#        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /tmp/kong.yml
@@ -307,9 +307,9 @@ services:
   functions:
     image: supabase/edge-runtime:v1.67.4
     restart: unless-stopped
-#    depends_on:
-#      analytics:
-#        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       JWT_SECRET: ${JWT_SECRET}
       SUPABASE_URL: http://kong:8000

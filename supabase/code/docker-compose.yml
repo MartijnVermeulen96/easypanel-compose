@@ -22,9 +22,9 @@ services:
       timeout: 10s
       interval: 5s
       retries: 3
-    depends_on:
-      analytics:
-        condition: service_healthy
+#    depends_on:
+#      analytics:
+#        condition: service_healthy
     environment:
       HOSTNAME: 0.0.0.0
       STUDIO_PG_META_URL: http://meta:8080
@@ -40,8 +40,8 @@ services:
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
       AUTH_JWT_SECRET: ${JWT_SECRET}
 
-      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
-      LOGFLARE_URL: http://analytics:4000
+#      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
+#      LOGFLARE_URL: http://analytics:4000
       NEXT_PUBLIC_ENABLE_LOGS: true
       # Comment to use Big Query backend for analytics
       NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
@@ -53,9 +53,9 @@ services:
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > /tmp/kong.yml && chmod 644 /tmp/kong.yml && /docker-entrypoint.sh kong docker-start'
-    depends_on:
-      analytics:
-        condition: service_healthy
+#    depends_on:
+#      analytics:
+#        condition: service_healthy
     environment:
       KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /tmp/kong.yml
@@ -78,8 +78,8 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
+#      analytics:
+#        condition: service_healthy
     healthcheck:
       test:
         [
@@ -171,8 +171,8 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
+#      analytics:
+#        condition: service_healthy
     restart: unless-stopped
     environment:
       PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
@@ -192,8 +192,8 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
+#      analytics:
+#        condition: service_healthy
     healthcheck:
       test:
         [
@@ -229,63 +229,63 @@ services:
       SEED_SELF_HOST: true
       RUN_JANITOR: true
 
-  # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
-  storage:
-    image: supabase/storage-api:v1.24.6
-    depends_on:
-      db:
-        # Disable this if you are using an external Postgres database
-        condition: service_healthy
-      rest:
-        condition: service_started
-      imgproxy:
-        condition: service_started
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://storage:5000/status"
-        ]
-      timeout: 5s
-      interval: 5s
-      retries: 3
-    restart: unless-stopped
-    environment:
-      ANON_KEY: ${ANON_KEY}
-      SERVICE_KEY: ${SERVICE_ROLE_KEY}
-      POSTGREST_URL: http://rest:3000
-      PGRST_JWT_SECRET: ${JWT_SECRET}
-      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-      FILE_SIZE_LIMIT: 52428800
-      STORAGE_BACKEND: file
-      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
-      TENANT_ID: stub
-      # TODO: https://github.com/supabase/storage-api/issues/55
-      REGION: stub
-      GLOBAL_S3_BUCKET: stub
-      ENABLE_IMAGE_TRANSFORMATION: "true"
-      IMGPROXY_URL: http://imgproxy:5001
-    volumes:
-      - ./volumes/storage:/var/lib/storage:z
+#  # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
+#  storage:
+#    image: supabase/storage-api:v1.24.6
+#    depends_on:
+#      db:
+#        # Disable this if you are using an external Postgres database
+#        condition: service_healthy
+#      rest:
+#        condition: service_started
+#      imgproxy:
+#        condition: service_started
+#    healthcheck:
+#      test:
+#        [
+#          "CMD",
+#          "wget",
+#          "--no-verbose",
+#          "--tries=1",
+#          "--spider",
+#          "http://storage:5000/status"
+#        ]
+#      timeout: 5s
+#      interval: 5s
+#      retries: 3
+#    restart: unless-stopped
+#    environment:
+#      ANON_KEY: ${ANON_KEY}
+#      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+#      POSTGREST_URL: http://rest:3000
+#      PGRST_JWT_SECRET: ${JWT_SECRET}
+#      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+#      FILE_SIZE_LIMIT: 52428800
+#      STORAGE_BACKEND: file
+#      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+#      TENANT_ID: stub
+#      # TODO: https://github.com/supabase/storage-api/issues/55
+#      REGION: stub
+#      GLOBAL_S3_BUCKET: stub
+#      ENABLE_IMAGE_TRANSFORMATION: "true"
+#      IMGPROXY_URL: http://imgproxy:5001
+#    volumes:
+#      - ./volumes/storage:/var/lib/storage:z
 
-  imgproxy:
-    image: darthsim/imgproxy:v3.28.0
-    healthcheck:
-      test: [ "CMD", "imgproxy", "health" ]
-      timeout: 5s
-      interval: 5s
-      retries: 3
-    environment:
-      IMGPROXY_BIND: ":5001"
-      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
-      IMGPROXY_USE_ETAG: "true"
-      IMGPROXY_ENABLE_WEBP_DETECTION: ${IMGPROXY_ENABLE_WEBP_DETECTION}
-    volumes:
-      - ./volumes/storage:/var/lib/storage:z
+#  imgproxy:
+#    image: darthsim/imgproxy:v3.28.0
+#    healthcheck:
+#      test: [ "CMD", "imgproxy", "health" ]
+#      timeout: 5s
+#      interval: 5s
+#      retries: 3
+#    environment:
+#      IMGPROXY_BIND: ":5001"
+#      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+#      IMGPROXY_USE_ETAG: "true"
+#      IMGPROXY_ENABLE_WEBP_DETECTION: ${IMGPROXY_ENABLE_WEBP_DETECTION}
+#    volumes:
+#      - ./volumes/storage:/var/lib/storage:z
 
   meta:
     image: supabase/postgres-meta:v0.89.3
@@ -293,8 +293,8 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
+#      analytics:
+#        condition: service_healthy
     restart: unless-stopped
     environment:
       PG_META_PORT: 8080
@@ -307,9 +307,9 @@ services:
   functions:
     image: supabase/edge-runtime:v1.67.4
     restart: unless-stopped
-    depends_on:
-      analytics:
-        condition: service_healthy
+#    depends_on:
+#      analytics:
+#        condition: service_healthy
     environment:
       JWT_SECRET: ${JWT_SECRET}
       SUPABASE_URL: http://kong:8000
@@ -325,34 +325,34 @@ services:
       - --main-service
       - /home/deno/functions/main
 
-  analytics:
-    image: supabase/logflare:1.14.2
-    healthcheck:
-      test: [ "CMD", "curl", "http://localhost:4000/health" ]
-      timeout: 5s
-      interval: 5s
-      retries: 10
-    restart: unless-stopped
-    depends_on:
-      db:
-        # Disable this if you are using an external Postgres database
-        condition: service_healthy
-    environment:
-      LOGFLARE_NODE_HOST: 127.0.0.1
-      DB_USERNAME: supabase_admin
-      DB_DATABASE: _supabase
-      DB_HOSTNAME: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_SCHEMA: _analytics
-      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
-      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
-      LOGFLARE_SINGLE_TENANT: true
-      LOGFLARE_SUPABASE_MODE: true
-      LOGFLARE_MIN_CLUSTER_SIZE: 1
-      POSTGRES_BACKEND_URL: postgresql://supabase_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/_supabase
-      POSTGRES_BACKEND_SCHEMA: _analytics
-      LOGFLARE_FEATURE_FLAG_OVERRIDE: multibackend=true
+#  analytics:
+#    image: supabase/logflare:1.14.2
+#    healthcheck:
+#      test: [ "CMD", "curl", "http://localhost:4000/health" ]
+#      timeout: 5s
+#      interval: 5s
+#      retries: 10
+#    restart: unless-stopped
+#    depends_on:
+#      db:
+#        # Disable this if you are using an external Postgres database
+#        condition: service_healthy
+#    environment:
+#      LOGFLARE_NODE_HOST: 127.0.0.1
+#      DB_USERNAME: supabase_admin
+#      DB_DATABASE: _supabase
+#      DB_HOSTNAME: ${POSTGRES_HOST}
+#      DB_PORT: ${POSTGRES_PORT}
+#      DB_PASSWORD: ${POSTGRES_PASSWORD}
+#      DB_SCHEMA: _analytics
+#      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
+#      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
+#      LOGFLARE_SINGLE_TENANT: true
+#      LOGFLARE_SUPABASE_MODE: true
+#      LOGFLARE_MIN_CLUSTER_SIZE: 1
+#      POSTGRES_BACKEND_URL: postgresql://supabase_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/_supabase
+#      POSTGRES_BACKEND_SCHEMA: _analytics
+#      LOGFLARE_FEATURE_FLAG_OVERRIDE: multibackend=true
 
   # Comment out everything below this point if you are using an external Postgres database
   db:
@@ -362,9 +362,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-    depends_on:
-      vector:
-        condition: service_healthy
+#    depends_on:
+#      vector:
+#        condition: service_healthy
     command:
       - postgres
       - -c
@@ -401,28 +401,28 @@ services:
       # Use named volume to persist pgsodium decryption key between restarts
       - db-config:/etc/postgresql-custom
 
-  vector:
-    image: timberio/vector:nightly-2025-06-18-alpine
-    healthcheck:
-      test:
-        [
-
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://vector:9001/health"
-        ]
-      timeout: 5s
-      interval: 5s
-      retries: 3
-    volumes:
-      - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro
-      - ${DOCKER_SOCKET_LOCATION}:/var/run/docker.sock:ro
-    environment:
-      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
-    command: [ "--config", "/etc/vector/vector.yml" ]
+#  vector:
+#    image: timberio/vector:nightly-2025-06-18-alpine
+#    healthcheck:
+#      test:
+#        [
+#
+#          "CMD",
+#          "wget",
+#          "--no-verbose",
+#          "--tries=1",
+#          "--spider",
+#          "http://vector:9001/health"
+#        ]
+#      timeout: 5s
+#      interval: 5s
+#      retries: 3
+#    volumes:
+#      - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro
+#      - ${DOCKER_SOCKET_LOCATION}:/var/run/docker.sock:ro
+#    environment:
+#      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
+#    command: [ "--config", "/etc/vector/vector.yml" ]
 
   # Update the DATABASE_URL if you are using an external Postgres database
   supavisor:
@@ -435,8 +435,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      analytics:
-        condition: service_healthy
+#      analytics:
+#        condition: service_healthy
     command:
       - /bin/sh
       - -c

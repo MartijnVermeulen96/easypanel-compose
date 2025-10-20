@@ -8,7 +8,7 @@ name: supabase
 
 services:
   studio:
-    image: supabase/studio:2025.06.16-sha-c4316c3
+    image: supabase/studio:2025.10.20-sha-5005fc6
     restart: unless-stopped
     healthcheck:
       test:
@@ -73,7 +73,7 @@ services:
       - ./volumes/api/kong.yml:/home/kong/temp.yml:ro
 
   auth:
-    image: supabase/gotrue:v2.172.1
+    image: supabase/gotrue:v2.180.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -166,7 +166,7 @@ services:
 
 
   rest:
-    image: postgrest/postgrest:v13.0.4
+    image: postgrest/postgrest:v13.0.7
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -187,7 +187,7 @@ services:
   realtime:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     container_name: realtime-dev.supabase-realtime
-    image: supabase/realtime:v2.37.1
+    image: supabase/realtime:v2.55.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -288,7 +288,7 @@ services:
 #      - ./volumes/storage:/var/lib/storage:z
 
   meta:
-    image: supabase/postgres-meta:v0.89.3
+    image: supabase/postgres-meta:v0.93.0
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -305,7 +305,7 @@ services:
       PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
 
   functions:
-    image: supabase/edge-runtime:v1.67.4
+    image: supabase/edge-runtime:v1.69.14
     restart: unless-stopped
     depends_on:
       db:
@@ -356,7 +356,7 @@ services:
 
   # Comment out everything below this point if you are using an external Postgres database
   db:
-    image: supabase/postgres:17.4.1.043
+    image: supabase/postgres:17.6.1.024
     healthcheck:
       test: pg_isready -U postgres -h localhost
       interval: 5s
@@ -426,7 +426,7 @@ services:
 
   # Update the DATABASE_URL if you are using an external Postgres database
   supavisor:
-    image: supabase/supavisor:2.5.5
+    image: supabase/supavisor:2.7.3
     healthcheck:
       test: curl -sSfL --head -o /dev/null "http://127.0.0.1:4000/api/health"
       interval: 10s

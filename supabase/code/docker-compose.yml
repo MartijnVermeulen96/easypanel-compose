@@ -185,8 +185,9 @@ services:
     command: "postgrest"
 
   realtime:
-    # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
-    container_name: realtime-dev.supabase-realtime
+    # Container name removed to allow multiple instances on Easypanel
+    # hostname is used instead to set the tenant ID via subdomain parsing
+    hostname: realtime-dev.supabase-realtime
     image: supabase/realtime:v2.55.0
     depends_on:
       db:

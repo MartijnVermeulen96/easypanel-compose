@@ -231,47 +231,47 @@ services:
       RUN_JANITOR: true
 
 #  # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
-#  storage:
-#    image: supabase/storage-api:v1.24.6
-#    depends_on:
-#      db:
-#        # Disable this if you are using an external Postgres database
-#        condition: service_healthy
-#      rest:
-#        condition: service_started
+  storage:
+    image: supabase/storage-api:v1.33.4
+    depends_on:
+      db:
+        # Disable this if you are using an external Postgres database
+        condition: service_healthy
+      rest:
+        condition: service_started
 #      imgproxy:
 #        condition: service_started
-#    healthcheck:
-#      test:
-#        [
-#          "CMD",
-#          "wget",
-#          "--no-verbose",
-#          "--tries=1",
-#          "--spider",
-#          "http://storage:5000/status"
-#        ]
-#      timeout: 5s
-#      interval: 5s
-#      retries: 3
-#    restart: unless-stopped
-#    environment:
-#      ANON_KEY: ${ANON_KEY}
-#      SERVICE_KEY: ${SERVICE_ROLE_KEY}
-#      POSTGREST_URL: http://rest:3000
-#      PGRST_JWT_SECRET: ${JWT_SECRET}
-#      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-#      FILE_SIZE_LIMIT: 52428800
-#      STORAGE_BACKEND: file
-#      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
-#      TENANT_ID: stub
-#      # TODO: https://github.com/supabase/storage-api/issues/55
-#      REGION: stub
-#      GLOBAL_S3_BUCKET: stub
-#      ENABLE_IMAGE_TRANSFORMATION: "true"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://storage:5000/status"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    restart: unless-stopped
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      # TODO: https://github.com/supabase/storage-api/issues/55
+      REGION: stub
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "false"
 #      IMGPROXY_URL: http://imgproxy:5001
-#    volumes:
-#      - ./volumes/storage:/var/lib/storage:z
+    volumes:
+      - ./volumes/storage:/var/lib/storage:z
 
 #  imgproxy:
 #    image: darthsim/imgproxy:v3.28.0
